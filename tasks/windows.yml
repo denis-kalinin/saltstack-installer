@@ -7,7 +7,7 @@
 
 - name: Copy minion config to Windows
   win_template:
-    src: "{{ itranga_salt_minion_config }}"
+    src: "{{ dk_salt_minion_config }}"
     dest: c:\salt\conf\minion
     register: win_minion_config
 

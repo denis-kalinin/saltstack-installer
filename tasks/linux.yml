@@ -9,11 +9,11 @@
   include: "{{ ansible_pkg_mgr }}/pyyaml.yml"
 
 - include: "{{ ansible_pkg_mgr }}/git-provider.yml"
-  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
 
 ######### make libgit2 #######
 - include: "make-libgit2.yml"
-  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
 #############################
 
 - name: Get salt bootstrap script
@@ -29,23 +29,23 @@
     mode: 0744
 
 - name: Copy master configuration
-  template: src={{itranga_salt_master_config}} dest=/tmp/master.yml
-  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+  template: src={{dk_salt_master_config}} dest=/tmp/master.yml
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
   register: master_yaml
 
 - name: Convert master YAML to json
   shell: python /tmp/yaml_to_json.py < /tmp/master.yml > /tmp/master.json
-  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '') and master_yaml.changed
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '') and master_yaml.changed
   register: master_json
 
 - name: Copy minion configuration
-  template: src={{itranga_salt_minion_config}} dest=/tmp/minion.yml
-  when: not (itranga_salt_minion_config is undefined or itranga_salt_minion_config is none or itranga_salt_minion_config | trim == '')
+  template: src={{dk_salt_minion_config}} dest=/tmp/minion.yml
+  when: not (dk_salt_minion_config is undefined or dk_salt_minion_config is none or dk_salt_minion_config | trim == '')
   register: minion_yaml
 
 - name: Convert minion YAML to json
   shell: python /tmp/yaml_to_json.py < /tmp/minion.yml > /tmp/minion.json
-  when: not (itranga_salt_minion_config is undefined or itranga_salt_minion_config is none or itranga_salt_minion_config | trim == '') and minion_yaml.changed
+  when: not (dk_salt_minion_config is undefined or dk_salt_minion_config is none or dk_salt_minion_config | trim == '') and minion_yaml.changed
   register: minion_json
 
 - name: copy Salt installation script

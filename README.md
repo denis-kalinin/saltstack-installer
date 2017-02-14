@@ -1,7 +1,6 @@
-itranga.saltstack
+saltstack-installer
 =========
 [![Build Status](https://travis-ci.org/denis-kalinin/saltstack-installer.svg?branch=master)](https://travis-ci.org/denis-kalinin/saltstack-installer)
-[![Ansible Galaxy](https://img.shields.io/badge/galaxy-avinetworks.docker-blue.svg)](https://galaxy.ansible.com/avinetworks/docker/)
 
 There was a joke:
 > &mdash; What is there Internet Explorer on Windows for?  
@@ -12,8 +11,8 @@ it has some disadvantages versus Ansible for agentless configuration:
 - doesn't work on Windows
 - [has bug with Jinja template]
 
-Saltstack, in common, is more robust and flexible than Ansible, imho!!! My tactic is to install
-Saltstack and its configuration on a host with Ansible.
+Saltstack is more robust and flexible than Ansible, (*imho!!!*) and my tactic is to install
+Saltstack and its configuration on nodes with Ansible.
 
 Requirements
 ------------
@@ -25,9 +24,9 @@ Role Variables
 
 A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-1. `itranga_salt_master_addresses` &ndash; array of salt masters, to be provided to `itranga_salt_minion_config`
-2. `itranga_salt_minion_config` &ndash; location of minion's jinja-template in your playbook
-3. `itranga_salt_master_config` &ndash; location of master's jinja-template in your playbook
+1. `dk_salt_master_addresses` &ndash; array of salt masters, to be provided to `dk_salt_minion_config`
+2. `dk_salt_minion_config` &ndash; location of minion's jinja-template in your playbook
+3. `dk_salt_master_config` &ndash; location of master's jinja-template in your playbook
 
 ### itranga_salt_master_addresses
 The array can be fetched, say, from group `[master]` in the playbook's inventory:
@@ -47,16 +46,16 @@ Just add `pre_task`:
 and then, in the role definition:
 ```yaml
   roles:
-    - role: itranga.saltstack
-      itranga_salt_master_addresses: "{{master_ips}}"
-      itranga_salt_minion_config: "{{ minion_config_file | default(None) }}"
-      itranga_salt_master_config: "{{ master_config_file | default(None) }}"
+    - role: saltstack-installer
+      dk_salt_master_addresses: "{{master_ips}}"
+      dk_salt_minion_config: "{{ minion_config_file | default(None) }}"
+      dk_salt_master_config: "{{ master_config_file | default(None) }}"
 
 ```
-### itranga_salt_minion_config
-`itranga_salt_minion_config` should reside somewhere in your playbook. Example of minion config as Jinja template:
+### dk_salt_minion_config
+`dk_salt_minion_config` should reside somewhere in your playbook. Example of minion config as Jinja template:
 ```yaml
-master: {{ itranga_salt_master_addressess }}
+master: {{ dk_salt_master_addressess }}
 id: {{ inventory_hostname }}
 hash_type: sha256
 master_tries: -1
@@ -90,10 +89,10 @@ Example Playbook
   gather_facts: true
   become: false
   roles:
-    - role: itranga.saltstack
-      itranga_salt_master_addresses: "{{master_ips}}"
-      itranga_salt_minion_config: "{{ minion_config_file | default(None) }}"
-      itranga_salt_master_config: "{{ master_config_file | default(None) }}"
+    - role: saltstack-installer
+      dk_salt_master_addresses: "{{master_ips}}"
+      dk_salt_minion_config: "{{ minion_config_file | default(None) }}"
+      dk_salt_master_config: "{{ master_config_file | default(None) }}"
 ```
 
 License
