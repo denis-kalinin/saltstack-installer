@@ -28,7 +28,7 @@ A description of the settable variables for this role should go here, including 
 2. `dk_salt_minion_config` &ndash; location of minion's jinja-template in your playbook
 3. `dk_salt_master_config` &ndash; location of master's jinja-template in your playbook
 
-### itranga_salt_master_addresses
+### dk_salt_master_addresses
 The array can be fetched, say, from group `[master]` in the playbook's inventory:
 ```dosini
 [master]
