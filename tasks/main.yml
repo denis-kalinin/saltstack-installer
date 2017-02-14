@@ -1,0 +1,7 @@
+---
+- include: windows.yml
+  when: ansible_system == 'Win32NT'
+
+- include: linux.yml
+  become: true
+  when: ansible_system == 'Linux'

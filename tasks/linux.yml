@@ -1,0 +1,64 @@
+---
+# tasks file for itranga.saltstack
+# https://meganii.com/blog/2016/07/18/installing-h2o-with-ansible/
+
+- name: "insert ansible_hostname into /etc/hosts to speed up saltstack"
+  lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1\s+{{ansible_hostname}}$' line="127.0.0.1 {{ansible_hostname}}" state=present
+
+- name: Saltstack | Install PyYAML
+  include: "{{ ansible_pkg_mgr }}/pyyaml.yml"
+
+- include: "{{ ansible_pkg_mgr }}/git-provider.yml"
+  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+
+######### make libgit2 #######
+- include: "make-libgit2.yml"
+  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+#############################
+
+- name: Get salt bootstrap script
+  get_url:
+    url: https://bootstrap.saltstack.com
+    dest: /tmp/bootstrap_salt.sh
+    mode: 0744
+
+- name: copy yaml to json script
+  copy:
+    src: yaml_to_json.py
+    dest: /tmp/yaml_to_json.py
+    mode: 0744
+
+- name: Copy master configuration
+  template: src={{itranga_salt_master_config}} dest=/tmp/master.yml
+  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '')
+  register: master_yaml
+
+- name: Convert master YAML to json
+  shell: python /tmp/yaml_to_json.py < /tmp/master.yml > /tmp/master.json
+  when: not (itranga_salt_master_config is undefined or itranga_salt_master_config is none or itranga_salt_master_config | trim == '') and master_yaml.changed
+  register: master_json
+
+- name: Copy minion configuration
+  template: src={{itranga_salt_minion_config}} dest=/tmp/minion.yml
+  when: not (itranga_salt_minion_config is undefined or itranga_salt_minion_config is none or itranga_salt_minion_config | trim == '')
+  register: minion_yaml
+
+- name: Convert minion YAML to json
+  shell: python /tmp/yaml_to_json.py < /tmp/minion.yml > /tmp/minion.json
+  when: not (itranga_salt_minion_config is undefined or itranga_salt_minion_config is none or itranga_salt_minion_config | trim == '') and minion_yaml.changed
+  register: minion_json
+
+- name: copy Salt installation script
+  template:
+    src: install-salt.jinja
+    dest: /tmp/install-salt.sh
+    mode: 0744
+  register: salt_install_script    
+  when: minion_json.changed or master_json.changed
+
+- name: Bootstrap Salt
+  become: true
+  shell: bash install-salt.sh
+  args:
+    chdir: /tmp
+  when: salt_install_script is defined

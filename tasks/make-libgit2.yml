@@ -1,0 +1,42 @@
+---
+# make libgit2
+- name: Download libgit2 source
+  unarchive:
+    src: https://github.com/libgit2/libgit2/archive/v0.24.0.tar.gz
+    dest: /tmp
+    remote_src: true
+    creates: /tmp/libgit2-0.24.0
+
+- name: cmake libgit2
+  command: cmake . chdir=/tmp/libgit2-0.24.0 creates=/usr/local/lib/libgit2.so
+
+- name: make libgit2
+  command: make chdir=/tmp/libgit2-0.24.0 creates=/usr/local/lib/libgit2.so
+
+- name: install libgit2
+  command: make install chdir=/tmp/libgit2-0.24.0 creates=/usr/local/lib/libgit2.so
+  become: true
+
+# ln -s /usr/local/lib /usr/libx32 [for CENTOS]
+# or do like mentioned in https://codeyarns.com/2014/01/14/how-to-add-library-directory-to-ldconfig-cache/
+#- file:
+#    src: /usr/local/lib
+#    dest: /usr/libx32
+#    state: link
+- lineinfile:
+    name: /etc/ld.so.conf
+    line: '/usr/local/lib'
+  become: true
+
+- name: ldconfig
+  command: ldconfig creates=/usr/local/lib/libgit2.so
+  become: true
+#########################
+- name: Install cffi with pip
+  pip:
+    name: cffi
+
+- name: Install pygit2 with pip
+  pip:
+    name: pygit2
+    version: 0.24.0

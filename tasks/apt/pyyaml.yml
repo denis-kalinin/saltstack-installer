@@ -1,0 +1,6 @@
+---
+- name: APT | Install python-yaml
+  apt: name="{{ item }}" state=present
+  become: true
+  with_items:
+    - python-yaml

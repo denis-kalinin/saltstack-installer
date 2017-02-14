@@ -1,0 +1,42 @@
+- name: YUM | Install EPEL
+  yum: name="{{ item }}" state=present
+  with_items:
+    - epel-release
+
+- name: YUM | Install prerequisites for pygit
+  yum: name="{{ item }}" state=present
+  become: true
+  with_items:
+    #- GitPython
+    #- python-pygit2
+    #- gcc
+    #- python-devel
+    #- python2-pip    
+    #- libgit2-devel-0.21.5
+    ##- libgit2-glib-devel
+    - openssl-devel
+    - gcc
+    - cmake
+    - python-devel
+    - python2-pip
+    
+    
+
+#- name: Download get-pip.py script
+#  get_url:
+#    url: https://bootstrap.pypa.io/get-pip.py
+#    dest: /tmp/get-pip.py
+
+#- name: Install pip with python
+#  command: python /tmp/get-pip.py
+#  become: true
+
+
+#- name: Install cffi with pip
+#  pip:
+#    name: cffi
+
+#- name: Install pygit2 with pip
+#  pip:
+#    name: pygit2
+#    version: 0.21.4

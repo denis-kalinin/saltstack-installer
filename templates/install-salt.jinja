@@ -1,0 +1,20 @@
+#! /usr/bin/env bash
+{% set has_master = False %}
+{% set has_minion = False %}
+{% if not (master_config is undefined or master_config is none or master_config | trim == '') %}
+{% set has_master = True %}
+masterConfig=$(cat master.json)
+{% endif %}
+{% if not (minion_config is undefined or minion_config is none or minion_config | trim == '') %}
+{% set has_minion = True %}
+minionConfig=$(cat minion.json)
+{% endif %}
+{% if has_master and has_minion %}
+bash bootstrap_salt.sh -P -M -J $masterConfig -j $minionConfig git v2016.11.2
+{% elif has_master %}
+bash bootstrap_salt.sh -P -M -J $masterConfig git v2016.11.2
+{% elif has_minion %}
+bash bootstrap_salt.sh -P -j $minionConfig git v2016.11.2
+{% else %}
+bash bootstrap_salt.sh -P git v2016.11.2
+{% endif %}

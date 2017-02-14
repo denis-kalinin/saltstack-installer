@@ -1,0 +1,7 @@
+---
+- name: YUM | Install python-yaml
+  yum: name="{{ item }}" state=present
+  become: true
+  with_items:
+    - PyYAML
+    - pciutils

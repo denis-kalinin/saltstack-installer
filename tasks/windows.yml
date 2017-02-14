@@ -1,0 +1,22 @@
+- name: Install Salt Minion on Windows
+  win_package:
+    name: Saltstack minion package
+    path: https://repo.saltstack.com/windows/Salt-Minion-2016.3.4-x86-Setup.exe
+    product_id: Salt Minion
+    arguments: /S /start-service=0
+
+- name: Copy minion config to Windows
+  win_template:
+    src: "{{ itranga_salt_minion_config }}"
+    dest: c:\salt\conf\minion
+    register: win_minion_config
+
+- name: Change credentials of salt-minon Windows service
+  script: "{{ role_path }}/templates/change-minion-service.ps1 -username {{ ansible_user }} -password {{ ansible_password }}"
+  when: (win_minion_config is defined and win_minion_config.changed)
+
+- name: Start salt-minion Windows service
+  win_service:
+    name: salt-minion
+    state: started
+  when: (win_minion_config is defined and win_minion_config.changed)
