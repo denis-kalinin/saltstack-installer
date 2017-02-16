@@ -14,6 +14,14 @@ it has some disadvantages versus Ansible for agentless configuration:
 Saltstack is more robust and flexible than Ansible, (*imho!!!*) and my tactic is to install
 Saltstack and its configuration on nodes with Ansible.
 
+Also this playbook will install Saltstack masters with fully fledged _GitFS_ 
+([Git fileserver backend](https://docs.saltstack.com/en/latest/topics/tutorials/gitfs.html))
+&mdash; compiles and installs Pygit2 as provider.  
+*Pygit2* is the only provider supporting HTTPS and Authentication to GIT servers &ndash; as I found out, others
+(_GitPython_ and _Dulwich_) are lacking these features.  
+ [Ubuntu](https://www.linkedin.com/today/post/article/saltstacks-gitfs-ubuntu-denis-kalinin) and Centos have inappropriate versions
+in their repositories, that's why we need to compile _libgit2_, the _pygit2_'s backbone, from source. 
+
 Requirements
 ------------
 
