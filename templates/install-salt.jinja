@@ -1,11 +1,11 @@
 #! /usr/bin/env bash
 {% set has_master = False %}
 {% set has_minion = False %}
-{% if not (master_config is undefined or master_config is none or master_config | trim == '') %}
+{% if not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '') %}
 {% set has_master = True %}
 masterConfig=$(cat master.json)
 {% endif %}
-{% if not (minion_config is undefined or minion_config is none or minion_config | trim == '') %}
+{% if not (dk_salt_minion_config is undefined or dk_salt_minion_config is none or dk_salt_minion_config | trim == '') %}
 {% set has_minion = True %}
 minionConfig=$(cat minion.json)
 {% endif %}
