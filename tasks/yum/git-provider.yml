@@ -7,6 +7,7 @@
   yum: name="{{ item }}" state=present
   become: true
   with_items:
+    # python-pygit2
     #- GitPython
     #- python-pygit2
     #- gcc
@@ -14,11 +15,11 @@
     #- python2-pip    
     #- libgit2-devel-0.21.5
     ##- libgit2-glib-devel
+   
     - openssl-devel
     - gcc
     - cmake
     - python-devel
-    - python2-pip
     
     
 

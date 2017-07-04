@@ -5,16 +5,8 @@
 - name: "insert ansible_hostname into /etc/hosts to speed up saltstack"
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1\s+{{ansible_hostname}}$' line="127.0.0.1 {{ansible_hostname}}" state=present
 
-- name: Saltstack | Install PyYAML
-  include: "{{ ansible_pkg_mgr }}/pyyaml.yml"
-
-- include: "{{ ansible_pkg_mgr }}/git-provider.yml"
-  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
-
-######### make libgit2 #######
-- include: "make-libgit2.yml"
-  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
-#############################
+### instead of previous for centos
+- include: "{{ ansible_pkg_mgr }}/install.yml"
 
 - name: Get salt bootstrap script
   get_url:

@@ -1,0 +1,10 @@
+#- name: Saltstack | Install PyYAML
+#  include: "pyyaml.yml"
+
+- include: "git-provider.yml"
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
+
+######### make libgit2 #######
+- include: "make-libgit2.yml"
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
+#############################

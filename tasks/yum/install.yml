@@ -1,0 +1,10 @@
+- name: YUM | Install EPEL
+  yum: name="{{ item }}" state=present
+  with_items:
+    - epel-release
+
+- name: YUM | Install Pygit on Masters
+  yum: name="{{ item }}" state=present
+  when: not (dk_salt_master_config is undefined or dk_salt_master_config is none or dk_salt_master_config | trim == '')
+  with_items:
+    - python-pygit2
